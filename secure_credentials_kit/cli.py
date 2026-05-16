@@ -1,6 +1,6 @@
 import argparse
 
-from secure_credentials.credentials import edit_credentials, generate_credentials_key
+from secure_credentials_kit.credentials import edit_credentials, generate_credentials_key
 
 
 def print_key_paths(env: str, key_paths: dict) -> None:
@@ -50,7 +50,7 @@ def edit_main(argv=None) -> int:
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(prog="secure-credentials")
+    parser = argparse.ArgumentParser(prog="secure-credentials-kit")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     generate_parser = subparsers.add_parser(

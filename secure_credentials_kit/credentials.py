@@ -2,7 +2,7 @@ from os import getenv, makedirs, path, remove
 from subprocess import run as subprocess_run
 from typing import Optional
 
-from secure_credentials.utils import (
+from secure_credentials_kit.utils import (
     derive_readonly_key,
     decrypt_credentials_data,
     encrypt_credentials_data,

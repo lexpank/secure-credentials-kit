@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from secure_credentials.credentials import edit_credentials
+from secure_credentials_kit.credentials import edit_credentials
 
 
 class Command(BaseCommand):

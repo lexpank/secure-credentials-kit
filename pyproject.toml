@@ -3,7 +3,7 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "secure-credentials"
+name = "secure-credentials-kit"
 version = "0.1.0"
 description = "A secure encrypted credentials system for Django and FastAPI, inspired by Rails credentials"
 readme = "README.md"
@@ -34,13 +34,13 @@ django = ["Django>=5.2,<6.1"]
 fastapi = ["fastapi>=0.100.0"]
 
 [project.scripts]
-secure-credentials = "secure_credentials.cli:main"
-secure-credentials-edit = "secure_credentials.cli:edit_main"
-secure-credentials-generate-key = "secure_credentials.cli:generate_key_main"
+secure-credentials-kit = "secure_credentials_kit.cli:main"
+secure-credentials-kit-edit = "secure_credentials_kit.cli:edit_main"
+secure-credentials-kit-generate-key = "secure_credentials_kit.cli:generate_key_main"
 
 [project.urls]
-Homepage = "https://github.com/lexpank/django-secure-credentials"
-Issues = "https://github.com/lexpank/django-secure-credentials/issues"
+Homepage = "https://github.com/lexpank/django-secure-credentials-kit"
+Issues = "https://github.com/lexpank/django-secure-credentials-kit/issues"
 
 [tool.setuptools.packages.find]
 exclude = ["tests", "examples"]
@@ -48,4 +48,5 @@ exclude = ["tests", "examples"]
 [dependency-groups]
 dev = [
     "build>=1.2.0",
+    "twine>=6.0.0",
 ]

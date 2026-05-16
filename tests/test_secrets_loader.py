@@ -1,6 +1,6 @@
 import unittest
 
-from secure_credentials.secrets_loader import CredentialsContainer, normalize_credentials
+from secure_credentials_kit.secrets_loader import CredentialsContainer, normalize_credentials
 
 
 class CredentialsContainerTests(unittest.TestCase):

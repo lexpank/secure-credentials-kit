@@ -4,12 +4,12 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from secure_credentials.credentials import (
+from secure_credentials_kit.credentials import (
     generate_credentials_key,
     resolve_master_key_path,
     resolve_read_key_path,
 )
-from secure_credentials.utils import (
+from secure_credentials_kit.utils import (
     KEY_FORMAT_VERSION,
     MASTER_KEY_ROLE,
     READONLY_KEY_ROLE,
@@ -54,8 +54,8 @@ class KeyRoleTests(unittest.TestCase):
             encrypt_credentials_data(make_readonly_key(), "api_key: secret")
 
     def test_master_key_encrypts_signed_envelope(self):
-        with patch("secure_credentials.utils.encrypt_data", return_value="encrypted"):
-            with patch("secure_credentials.utils._sign_data", return_value="signed"):
+        with patch("secure_credentials_kit.utils.encrypt_data", return_value="encrypted"):
+            with patch("secure_credentials_kit.utils._sign_data", return_value="signed"):
                 encrypted = encrypt_credentials_data(make_master_key(), "api_key: secret")
 
         envelope = json.loads(encrypted)
@@ -72,8 +72,8 @@ class KeyRoleTests(unittest.TestCase):
             }
         )
 
-        with patch("secure_credentials.utils._verify_signature") as verify_signature:
-            with patch("secure_credentials.utils.decrypt_data", return_value="plain"):
+        with patch("secure_credentials_kit.utils._verify_signature") as verify_signature:
+            with patch("secure_credentials_kit.utils.decrypt_data", return_value="plain"):
                 plain = decrypt_credentials_data(make_readonly_key(), encrypted)
 
         self.assertEqual(plain, "plain")
@@ -90,7 +90,7 @@ class KeyRoleTests(unittest.TestCase):
     def test_generate_credentials_key_writes_master_and_readonly_by_default(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             with patch(
-                "secure_credentials.credentials.generate_credentials_key_pair",
+                "secure_credentials_kit.credentials.generate_credentials_key_pair",
                 return_value=("master-key", "readonly-key"),
             ):
                 generated = generate_credentials_key("production", tmpdir)

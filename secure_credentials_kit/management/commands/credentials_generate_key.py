@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from secure_credentials.credentials import generate_credentials_key
+from secure_credentials_kit.credentials import generate_credentials_key
 
 
 class Command(BaseCommand):

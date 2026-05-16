@@ -4,7 +4,7 @@ from typing import Callable, Optional, TYPE_CHECKING
 from fastapi import FastAPI, Request
 
 if TYPE_CHECKING:
-    from secure_credentials.secrets_loader import CredentialsContainer
+    from secure_credentials_kit.secrets_loader import CredentialsContainer
 
 
 DEFAULT_STATE_ATTRIBUTE = "credentials"
@@ -14,7 +14,7 @@ def resolve_environment(env: Optional[str] = None) -> str:
     """Resolve the credentials environment for a FastAPI application."""
     return (
         env
-        or getenv("SECURE_CREDENTIALS_ENV")
+        or getenv("SECURE_CREDENTIALS_KIT_ENV")
         or getenv("FASTAPI_ENV")
         or getenv("ENV")
         or "development"
@@ -22,12 +22,12 @@ def resolve_environment(env: Optional[str] = None) -> str:
 
 
 def load_credentials(env: Optional[str] = None) -> "CredentialsContainer":
-    from secure_credentials.secrets_loader import decrypt_credentials
+    from secure_credentials_kit.secrets_loader import decrypt_credentials
 
     return decrypt_credentials(resolve_environment(env))
 
 
-def setup_secure_credentials(
+def setup_secure_credentials_kit(
     app: FastAPI,
     env: Optional[str] = None,
     state_attribute: str = DEFAULT_STATE_ATTRIBUTE,

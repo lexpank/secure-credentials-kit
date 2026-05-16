@@ -13,10 +13,10 @@ class SetupMetadataTests(unittest.TestCase):
         with pyproject_path.open("rb") as f:
             return tomllib.load(f)
 
-    def test_package_uses_secure_credentials_name_and_initial_version(self):
+    def test_package_uses_secure_credentials_kit_name_and_initial_version(self):
         metadata = self.load_project_metadata()["project"]
 
-        self.assertEqual(metadata["name"], "secure-credentials")
+        self.assertEqual(metadata["name"], "secure-credentials-kit")
         self.assertEqual(metadata["version"], "0.1.0")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
@@ -45,14 +45,17 @@ class SetupMetadataTests(unittest.TestCase):
     def test_console_entry_points_are_framework_neutral(self):
         scripts = self.load_project_metadata()["project"]["scripts"]
 
-        self.assertEqual(scripts["secure-credentials"], "secure_credentials.cli:main")
         self.assertEqual(
-            scripts["secure-credentials-edit"],
-            "secure_credentials.cli:edit_main",
+            scripts["secure-credentials-kit"],
+            "secure_credentials_kit.cli:main",
         )
         self.assertEqual(
-            scripts["secure-credentials-generate-key"],
-            "secure_credentials.cli:generate_key_main",
+            scripts["secure-credentials-kit-edit"],
+            "secure_credentials_kit.cli:edit_main",
+        )
+        self.assertEqual(
+            scripts["secure-credentials-kit-generate-key"],
+            "secure_credentials_kit.cli:generate_key_main",
         )
 
     def test_uv_dev_group_contains_build_tooling(self):

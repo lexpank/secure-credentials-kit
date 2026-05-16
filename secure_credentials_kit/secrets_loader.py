@@ -1,6 +1,6 @@
 from os import path
-from secure_credentials.credentials import read_key, resolve_read_key_path, secret_path
-from secure_credentials.utils import decrypt_credentials_data
+from secure_credentials_kit.credentials import read_key, resolve_read_key_path, secret_path
+from secure_credentials_kit.utils import decrypt_credentials_data
 
 
 def normalize_credentials(credentials):

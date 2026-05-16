@@ -1,4 +1,4 @@
-# Secure Credentials
+# Secure Credentials Kit
 
 A secure, encrypted credentials system for Django and FastAPI, inspired by Rails credentials.
 
@@ -11,6 +11,13 @@ A secure, encrypted credentials system for Django and FastAPI, inspired by Rails
 
 ## Installation
 
+The PyPI distribution, Python package, and CLI are all named for Secure
+Credentials Kit:
+
+- Distribution: `secure-credentials-kit`
+- Python package: `secure_credentials_kit`
+- CLI: `secure-credentials-kit`
+
 Supported versions:
 
 - Python 3.10, 3.11, 3.12, 3.13, and 3.14
@@ -19,13 +26,13 @@ Supported versions:
 For Django:
 
 ```sh
-pip install "secure-credentials[django]"
+pip install "secure-credentials-kit[django]"
 ```
 
 For FastAPI:
 
 ```sh
-pip install "secure-credentials[fastapi]"
+pip install "secure-credentials-kit[fastapi]"
 ```
 
 ## Local Development
@@ -69,7 +76,7 @@ echo "secrets/*.key" >> .gitignore
 Generate a new key:
 
 ```sh
-secure-credentials generate-key <environment>
+secure-credentials-kit generate-key <environment>
 ```
 
 This creates two keys:
@@ -80,13 +87,13 @@ This creates two keys:
 You can regenerate a read-only key from an existing master key:
 
 ```sh
-secure-credentials generate-key <environment> --role readonly
+secure-credentials-kit generate-key <environment> --role readonly
 ```
 
 Edit encrypted credentials:
 
 ```sh
-secure-credentials edit <environment>
+secure-credentials-kit edit <environment>
 ```
 
 Editing requires `secrets/<environment>.master.key`. Applications should normally
@@ -117,12 +124,12 @@ contains a signed encrypted payload similar to:
 
 ## Django Usage
 
-Add `secure_credentials` to your `INSTALLED_APPS` in `settings.py`:
+Add `secure_credentials_kit` to your `INSTALLED_APPS` in `settings.py`:
 
 ```python
 INSTALLED_APPS = [
     ...
-    'secure_credentials',
+    'secure_credentials_kit',
     ...
 ]
 ```
@@ -144,7 +151,7 @@ python manage.py credentials_edit <environment>
 To load the credentials in your Django app:
 
 ```python
-from secure_credentials.secrets_loader import decrypt_credentials
+from secure_credentials_kit.secrets_loader import decrypt_credentials
 credentials = decrypt_credentials("environment")
 ```
 
@@ -156,13 +163,13 @@ Load credentials into FastAPI application state:
 
 ```python
 from fastapi import Depends, FastAPI
-from secure_credentials.fastapi import (
+from secure_credentials_kit.fastapi import (
     credentials_dependency,
-    setup_secure_credentials,
+    setup_secure_credentials_kit,
 )
 
 app = FastAPI()
-setup_secure_credentials(app, "production")
+setup_secure_credentials_kit(app, "production")
 
 
 @app.get("/settings")
@@ -170,8 +177,8 @@ def settings(credentials=Depends(credentials_dependency())):
     return {"api_host": credentials.get("api_host")}
 ```
 
-If no environment is passed to `setup_secure_credentials`, the helper checks
-`SECURE_CREDENTIALS_ENV`, `FASTAPI_ENV`, `ENV`, then falls back to `development`.
+If no environment is passed to `setup_secure_credentials_kit`, the helper checks
+`SECURE_CREDENTIALS_KIT_ENV`, `FASTAPI_ENV`, `ENV`, then falls back to `development`.
 
 ## Accessing Credentials
 

@@ -17,28 +17,35 @@ class FastApiIntegrationTests(unittest.TestCase):
             {"fastapi": self.fastapi_module},
         )
         self.fastapi_patcher.start()
-        sys.modules.pop("secure_credentials.fastapi", None)
-        self.secure_fastapi = importlib.import_module("secure_credentials.fastapi")
+        sys.modules.pop("secure_credentials_kit.fastapi", None)
+        self.secure_fastapi = importlib.import_module("secure_credentials_kit.fastapi")
 
     def tearDown(self):
         self.fastapi_patcher.stop()
-        sys.modules.pop("secure_credentials.fastapi", None)
+        sys.modules.pop("secure_credentials_kit.fastapi", None)
 
     def test_resolve_environment_uses_argument_first(self):
-        with patch.dict(os.environ, {"SECURE_CREDENTIALS_ENV": "production"}):
+        with patch.dict(os.environ, {"SECURE_CREDENTIALS_KIT_ENV": "production"}):
             self.assertEqual(
                 self.secure_fastapi.resolve_environment("staging"),
                 "staging",
             )
 
     def test_resolve_environment_checks_fastapi_env_and_fallback(self):
+        with patch.dict(
+            os.environ,
+            {"SECURE_CREDENTIALS_KIT_ENV": "production"},
+            clear=True,
+        ):
+            self.assertEqual(self.secure_fastapi.resolve_environment(), "production")
+
         with patch.dict(os.environ, {"FASTAPI_ENV": "test"}, clear=True):
             self.assertEqual(self.secure_fastapi.resolve_environment(), "test")
 
         with patch.dict(os.environ, {}, clear=True):
             self.assertEqual(self.secure_fastapi.resolve_environment(), "development")
 
-    def test_setup_secure_credentials_stores_credentials_on_app_state(self):
+    def test_setup_secure_credentials_kit_stores_credentials_on_app_state(self):
         credentials = object()
         app = types.SimpleNamespace(state=types.SimpleNamespace())
 
@@ -47,7 +54,7 @@ class FastApiIntegrationTests(unittest.TestCase):
             "load_credentials",
             return_value=credentials,
         ) as load_credentials:
-            result = self.secure_fastapi.setup_secure_credentials(app, "production")
+            result = self.secure_fastapi.setup_secure_credentials_kit(app, "production")
 
         load_credentials.assert_called_once_with("production")
         self.assertIs(result, credentials)
