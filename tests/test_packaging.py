@@ -17,7 +17,7 @@ class SetupMetadataTests(unittest.TestCase):
         metadata = self.load_project_metadata()["project"]
 
         self.assertEqual(metadata["name"], "secure-credentials-kit")
-        self.assertEqual(metadata["version"], "0.2.0")
+        self.assertEqual(metadata["version"], "0.2.1")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
     def test_django_and_fastapi_are_optional_extras(self):

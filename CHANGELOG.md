@@ -2,6 +2,12 @@
 
 All notable changes to Secure Credentials Kit are documented in this file.
 
+## 0.2.1 - 2026-05-20
+
+### Changed
+
+- Updated project homepage and issue tracker URLs to the renamed `secure-credentials-kit` repository.
+
 ## 0.2.0 - 2026-05-20
 
 ### Added
