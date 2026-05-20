@@ -1,3 +1,4 @@
+import base64
 import json
 import tempfile
 import unittest
@@ -17,6 +18,7 @@ from secure_credentials_kit.utils import (
     encrypt_credentials_data,
     is_master_key,
     is_readonly_key,
+    parse_key,
     serialize_key,
 )
 
@@ -45,6 +47,29 @@ def make_readonly_key() -> str:
 
 
 class KeyRoleTests(unittest.TestCase):
+    def test_serialized_keys_are_base64_payloads_with_inferred_roles(self):
+        key = make_master_key()
+
+        with self.assertRaises(json.JSONDecodeError):
+            json.loads(key)
+
+        payload = json.loads(base64.urlsafe_b64decode(key).decode("utf-8"))
+        self.assertNotIn("role", payload)
+        self.assertEqual(payload["version"], KEY_FORMAT_VERSION)
+        self.assertEqual(parse_key(key)["role"], MASTER_KEY_ROLE)
+
+    def test_legacy_json_keys_are_still_supported(self):
+        legacy_key = json.dumps(
+            {
+                "version": KEY_FORMAT_VERSION,
+                "role": READONLY_KEY_ROLE,
+                "encryption_key": "encryption",
+                "verification_key": "verification",
+            }
+        )
+
+        self.assertTrue(is_readonly_key(legacy_key))
+
     def test_generated_key_roles_are_identified(self):
         self.assertTrue(is_master_key(make_master_key()))
         self.assertTrue(is_readonly_key(make_readonly_key()))
@@ -104,6 +129,27 @@ class KeyRoleTests(unittest.TestCase):
             self.assertEqual(master_path.read_text(), "master-key")
             self.assertEqual(readonly_path.read_text(), "readonly-key")
 
+    def test_generated_master_and_readonly_keys_roundtrip_credentials(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            generated = generate_credentials_key("production", tmpdir)
+
+            master_key = Path(generated["master"]).read_text()
+            readonly_key = Path(generated["readonly"]).read_text()
+
+            self.assertTrue(is_master_key(master_key))
+            self.assertTrue(is_readonly_key(readonly_key))
+
+            encrypted = encrypt_credentials_data(master_key, "api_key: secret")
+
+            self.assertEqual(
+                decrypt_credentials_data(master_key, encrypted),
+                "api_key: secret",
+            )
+            self.assertEqual(
+                decrypt_credentials_data(readonly_key, encrypted),
+                "api_key: secret",
+            )
+
     def test_read_key_prefers_readonly_and_master_key_rejects_readonly_only(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             readonly_path = Path(tmpdir) / "production.readonly.key"
@@ -112,6 +158,13 @@ class KeyRoleTests(unittest.TestCase):
             self.assertEqual(resolve_read_key_path("production", tmpdir), str(readonly_path))
             with self.assertRaises(PermissionError):
                 resolve_master_key_path("production", tmpdir)
+
+    def test_read_key_uses_master_when_readonly_is_absent(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            master_path = Path(tmpdir) / "production.master.key"
+            master_path.write_text(make_master_key())
+
+            self.assertEqual(resolve_read_key_path("production", tmpdir), str(master_path))
 
 
 if __name__ == "__main__":

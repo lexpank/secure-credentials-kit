@@ -6,6 +6,7 @@ A secure, encrypted credentials system for Django and FastAPI, inspired by Rails
 - Environment-specific encrypted credentials
 - Framework-neutral CLI for generating and editing encrypted credentials
 - Master keys for editing credentials and read-only keys for application runtime access
+- Signed encrypted credential files backed by an asymmetric signing/verification key pair
 - Django management commands
 - FastAPI helpers for loading credentials into application state
 
@@ -73,16 +74,21 @@ Add secret keys to `.gitignore`:
 echo "secrets/*.key" >> .gitignore
 ```
 
-Generate a new key:
+Generate a new key pair:
 
 ```sh
 secure-credentials-kit generate-key <environment>
 ```
 
-This creates two keys:
+This creates two role-specific keys:
 
-- `secrets/<environment>.master.key` can decrypt, edit, encrypt, and sign credentials.
-- `secrets/<environment>.readonly.key` can decrypt and verify credentials, but cannot produce accepted credential updates.
+- `secrets/<environment>.master.key` can decrypt, edit, encrypt, and sign credentials with the private signing key.
+- `secrets/<environment>.readonly.key` can decrypt and verify credentials with the public verification key, but cannot produce accepted credential updates.
+
+Key files are stored as one-line base64url payloads. The decoded payload contains
+the key material and format version; the package detects the key role
+automatically from the key material, so there is no visible `master:` or
+`readonly:` prefix in the file contents.
 
 You can regenerate a read-only key from an existing master key:
 

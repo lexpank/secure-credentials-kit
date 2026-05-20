@@ -4,7 +4,7 @@ from secure_credentials_kit.credentials import generate_credentials_key
 
 
 class Command(BaseCommand):
-    help = "Generate a new encryption key"
+    help = "Generate secure credentials keys"
 
     def add_arguments(self, parser):
         parser.add_argument("env", type=str, help="Environment name")

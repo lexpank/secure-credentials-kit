@@ -13,11 +13,11 @@ class SetupMetadataTests(unittest.TestCase):
         with pyproject_path.open("rb") as f:
             return tomllib.load(f)
 
-    def test_package_uses_secure_credentials_kit_name_and_initial_version(self):
+    def test_package_uses_secure_credentials_kit_name_and_current_version(self):
         metadata = self.load_project_metadata()["project"]
 
         self.assertEqual(metadata["name"], "secure-credentials-kit")
-        self.assertEqual(metadata["version"], "0.1.0")
+        self.assertEqual(metadata["version"], "0.2.0")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
     def test_django_and_fastapi_are_optional_extras(self):

@@ -1,4 +1,5 @@
 import base64
+import binascii
 import json
 from typing import Tuple
 
@@ -12,7 +13,8 @@ def _base64_encode(data: bytes) -> str:
 
 
 def _base64_decode(data: str) -> bytes:
-    return base64.urlsafe_b64decode(data.encode("utf-8"))
+    padded_data = data + "=" * (-len(data) % 4)
+    return base64.urlsafe_b64decode(padded_data.encode("utf-8"))
 
 
 def _generate_signing_key_pair():
@@ -50,7 +52,11 @@ def _verify_signature(verification_key: str, data: str, signature: str) -> None:
 
 
 def serialize_key(key_data: dict) -> str:
-    return json.dumps(key_data, sort_keys=True)
+    payload = key_data.copy()
+    payload.pop("role", None)
+    return _base64_encode(
+        json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    )
 
 
 def parse_key(key: str) -> dict:
@@ -59,7 +65,11 @@ def parse_key(key: str) -> dict:
     try:
         key_data = json.loads(stripped_key)
     except json.JSONDecodeError:
-        raise ValueError("Unsupported credentials key format")
+        try:
+            decoded_key = _base64_decode(stripped_key).decode("utf-8")
+            key_data = json.loads(decoded_key)
+        except (binascii.Error, json.JSONDecodeError, UnicodeDecodeError):
+            raise ValueError("Unsupported credentials key format")
 
     if not isinstance(key_data, dict):
         raise ValueError("Unsupported credentials key format")
@@ -68,8 +78,13 @@ def parse_key(key: str) -> dict:
         raise ValueError("Unsupported credentials key format")
 
     role = key_data.get("role")
-    if role not in {MASTER_KEY_ROLE, READONLY_KEY_ROLE}:
+    inferred_role = MASTER_KEY_ROLE if key_data.get("signing_key") else READONLY_KEY_ROLE
+    if role is None:
+        role = inferred_role
+    elif role not in {MASTER_KEY_ROLE, READONLY_KEY_ROLE}:
         raise ValueError("Unsupported credentials key role")
+    elif role != inferred_role:
+        raise ValueError("Credentials key role does not match key material")
 
     if not key_data.get("encryption_key"):
         raise ValueError("Credentials key is missing encryption_key")
@@ -80,6 +95,8 @@ def parse_key(key: str) -> dict:
     if role == MASTER_KEY_ROLE and not key_data.get("signing_key"):
         raise ValueError("Master credentials key is missing signing_key")
 
+    key_data = key_data.copy()
+    key_data["role"] = role
     return key_data
 
 

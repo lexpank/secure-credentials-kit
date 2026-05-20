@@ -10,7 +10,7 @@ def print_key_paths(env: str, key_paths: dict) -> None:
 
 def generate_key_main(argv=None) -> int:
     parser = argparse.ArgumentParser(
-        description="Generate an encryption key for secure credentials."
+        description="Generate secure credentials keys for an environment."
     )
     parser.add_argument("env", help="Environment name")
     parser.add_argument("--secrets-dir", default="secrets", help="Credentials directory")
@@ -55,7 +55,7 @@ def main(argv=None) -> int:
 
     generate_parser = subparsers.add_parser(
         "generate-key",
-        help="Generate an encryption key for an environment.",
+        help="Generate secure credentials keys for an environment.",
     )
     generate_parser.add_argument("env", help="Environment name")
     generate_parser.add_argument(
@@ -80,7 +80,11 @@ def main(argv=None) -> int:
         default="secrets",
         help="Credentials directory",
     )
-    edit_parser.add_argument("--editor", help="Editor command to use")
+    edit_parser.add_argument(
+        "--editor",
+        default="nano",
+        help="Editor command to use"
+    )
 
     args = parser.parse_args(argv)
 
