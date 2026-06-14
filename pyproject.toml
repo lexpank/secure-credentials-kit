@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "secure-credentials-kit"
-version = "0.3.0"
+version = "0.3.1"
 description = "A secure encrypted credentials system for Django and FastAPI, inspired by Rails credentials"
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
@@ -43,7 +43,7 @@ Homepage = "https://github.com/lexpank/secure-credentials-kit"
 Issues = "https://github.com/lexpank/secure-credentials-kit/issues"
 
 [tool.setuptools.packages.find]
-exclude = ["tests", "examples"]
+include = ["secure_credentials_kit*"]
 
 [dependency-groups]
 dev = [

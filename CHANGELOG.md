@@ -2,6 +2,13 @@
 
 All notable changes to Secure Credentials Kit are documented in this file.
 
+## 0.3.1 - 2026-06-15
+
+### Changed
+
+- Upgraded the locked dependency set, including Cryptography 49.0.0, Django 5.2.15 and 6.0.6, and FastAPI 0.137.0.
+- Restricted setuptools package discovery to prevent stale build output from being included in release wheels.
+
 ## 0.3.0 - 2026-05-31
 
 ### Added

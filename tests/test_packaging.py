@@ -17,7 +17,7 @@ class SetupMetadataTests(unittest.TestCase):
         metadata = self.load_project_metadata()["project"]
 
         self.assertEqual(metadata["name"], "secure-credentials-kit")
-        self.assertEqual(metadata["version"], "0.3.0")
+        self.assertEqual(metadata["version"], "0.3.1")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
     def test_django_and_fastapi_are_optional_extras(self):
@@ -56,6 +56,14 @@ class SetupMetadataTests(unittest.TestCase):
         self.assertEqual(
             scripts["secure-credentials-kit-generate-key"],
             "secure_credentials_kit.cli:generate_key_main",
+        )
+
+    def test_setuptools_only_discovers_the_application_package(self):
+        metadata = self.load_project_metadata()
+
+        self.assertEqual(
+            metadata["tool"]["setuptools"]["packages"]["find"]["include"],
+            ["secure_credentials_kit*"],
         )
 
     def test_uv_dev_group_contains_build_tooling(self):
