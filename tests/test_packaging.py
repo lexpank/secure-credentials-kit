@@ -17,20 +17,20 @@ class SetupMetadataTests(unittest.TestCase):
         metadata = self.load_project_metadata()["project"]
 
         self.assertEqual(metadata["name"], "secure-credentials-kit")
-        self.assertEqual(metadata["version"], "0.3.1")
+        self.assertEqual(metadata["version"], "0.3.2")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
     def test_django_and_fastapi_are_optional_extras(self):
         metadata = self.load_project_metadata()["project"]
 
-        self.assertNotIn("Django>=5.2,<6.1", metadata["dependencies"])
+        self.assertNotIn("Django>=5.2.17,<6.1", metadata["dependencies"])
         self.assertEqual(
             metadata["optional-dependencies"]["django"],
-            ["Django>=5.2,<6.1"],
+            ["Django>=5.2.17,<6.1"],
         )
         self.assertEqual(
             metadata["optional-dependencies"]["fastapi"],
-            ["fastapi>=0.100.0"],
+            ["fastapi>=0.141.1"],
         )
 
     def test_python_classifiers_match_supported_versions(self):
@@ -69,7 +69,10 @@ class SetupMetadataTests(unittest.TestCase):
     def test_uv_dev_group_contains_build_tooling(self):
         metadata = self.load_project_metadata()
 
-        self.assertIn("build>=1.2.0", metadata["dependency-groups"]["dev"])
+        self.assertEqual(
+            metadata["dependency-groups"]["dev"],
+            ["build>=1.5.0", "twine>=7.0.0"],
+        )
 
 
 if __name__ == "__main__":

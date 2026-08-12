@@ -2,6 +2,12 @@
 
 All notable changes to Secure Credentials Kit are documented in this file.
 
+## 0.3.2 - 2026-08-12
+
+### Changed
+
+- Upgraded the declared and locked dependency set, including Cryptography 50.0.0, Django 5.2.17 and 6.0.8, FastAPI 0.141.1, and Twine 7.0.0.
+
 ## 0.3.1 - 2026-06-15
 
 ### Changed
