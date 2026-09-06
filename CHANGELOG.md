@@ -2,6 +2,13 @@
 
 All notable changes to Secure Credentials Kit are documented in this file.
 
+## 0.3.3 - 2026-09-06
+
+### Changed
+
+- Upgraded dependencies, including Cryptography 50.0.1, Build 1.6.0, Setuptools 84.0.0, and Wheel 0.48.0.
+- Updated the Django extra to require Django 6.1.1 on Python 3.12–3.14, while retaining Django 5.2 LTS on Python 3.10–3.11.
+
 ## 0.3.2 - 2026-08-12
 
 ### Changed

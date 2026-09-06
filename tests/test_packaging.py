@@ -17,16 +17,20 @@ class SetupMetadataTests(unittest.TestCase):
         metadata = self.load_project_metadata()["project"]
 
         self.assertEqual(metadata["name"], "secure-credentials-kit")
-        self.assertEqual(metadata["version"], "0.3.2")
+        self.assertEqual(metadata["version"], "0.3.3")
         self.assertEqual(metadata["requires-python"], ">=3.10,<3.15")
 
     def test_django_and_fastapi_are_optional_extras(self):
         metadata = self.load_project_metadata()["project"]
 
-        self.assertNotIn("Django>=5.2.17,<6.1", metadata["dependencies"])
+        for requirement in metadata["optional-dependencies"]["django"]:
+            self.assertNotIn(requirement, metadata["dependencies"])
         self.assertEqual(
             metadata["optional-dependencies"]["django"],
-            ["Django>=5.2.17,<6.1"],
+            [
+                "Django>=5.2.17,<6.0; python_version < '3.12'",
+                "Django>=6.1.1,<6.2; python_version >= '3.12'",
+            ],
         )
         self.assertEqual(
             metadata["optional-dependencies"]["fastapi"],
@@ -71,7 +75,7 @@ class SetupMetadataTests(unittest.TestCase):
 
         self.assertEqual(
             metadata["dependency-groups"]["dev"],
-            ["build>=1.5.0", "twine>=7.0.0"],
+            ["build>=1.6.0", "twine>=7.0.0"],
         )
 
 

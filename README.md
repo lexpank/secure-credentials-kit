@@ -22,7 +22,7 @@ Credentials Kit:
 Supported versions:
 
 - Python 3.10, 3.11, 3.12, 3.13, and 3.14
-- Django 5.2 LTS and Django 6.0
+- Django 5.2 LTS on Python 3.10–3.11 and Django 6.1 on Python 3.12–3.14
 
 For Django:
 
@@ -52,6 +52,13 @@ Install framework extras when you need to test integrations:
 ```sh
 uv sync --extra django
 uv sync --extra fastapi
+```
+
+Upgrade all dependencies, including transitive dependencies, and install both extras:
+
+```sh
+uv lock --upgrade
+uv sync --all-extras
 ```
 
 Run tests:
